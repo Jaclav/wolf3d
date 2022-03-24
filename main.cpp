@@ -73,7 +73,7 @@ int main() {
     bool gravity = true;
     glm::vec3 direction(0.0, 0, 0);
     glm::vec3 right(0, 0, 0);
-    glm::vec3 cameraPos(1, 0, 1);
+    glm::vec3 cameraPos(1, 0, 4);
 
     glm::mat4 viewMatrix = glm::lookAt(cameraPos, cameraPos + direction, glm::cross(right, direction));
 
@@ -106,6 +106,21 @@ int main() {
                                           sf::Mouse::getPosition().x) / (float)window.getSize().x;
                 vertical_angle += float((int)window.getSize().y / 2 -
                                         sf::Mouse::getPosition().y) / (float)window.getSize().y;
+
+                if(horizontal_angle > M_PI) {
+                    horizontal_angle = -M_PI + fmod(horizontal_angle, M_PI);
+                }
+                if(horizontal_angle < -M_PI) {
+                    horizontal_angle = M_PI + fmod(horizontal_angle, M_PI);
+                }
+				/*
+		-170*		180*  170*
+				|
+		-90*----+----->x 90*
+				|
+			    \/z
+				0*
+				*/
 
                 if(vertical_angle < -M_PI / 2)
                     vertical_angle = -M_PI / 2;
@@ -270,6 +285,6 @@ int main() {
         glEnd();
 
         window.display();
-        window.setTitle(std::to_string(fpsCounter()) + "@Wolf3D:" + std::to_string(FOV) + std::to_string(cameraPos.x) + ":" + std::to_string(cameraPos.y) + ":" + std::to_string(cameraPos.z));
+        window.setTitle(std::to_string(fpsCounter()) + "@Wolf3D:" + std::to_string(FOV) + std::to_string(cameraPos.x) + ":" + std::to_string(cameraPos.y) + ":" + std::to_string(cameraPos.z) + ";" + std::to_string(horizontal_angle * 180 / M_PI));
     }
 }
