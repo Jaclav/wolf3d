@@ -85,7 +85,7 @@ int main() {
     glm::mat4 perspectiveMatrix = glm::perspective(FOV, aspect, P1, P2);
 
     float vertical_angle = 0;
-    float horizontal_angle = M_PI / 2;
+    float horizontalAngle = M_PI / 2;
     sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2));
     sf::Clock mouseClock;
 
@@ -98,29 +98,31 @@ int main() {
             if(event.type == sf::Event::Closed)
                 window.close();
             if(event.type == sf::Event::KeyPressed) {
-                if(sf::Keyboard::isKeyPressed(sf::Keyboard::G))
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::G)) {
                     gravity = !gravity;
+                    gravityClock.restart();
+                }
             }
             if(event.type == event.MouseMoved) {
-                horizontal_angle += float((int)window.getSize().x / 2 -
-                                          sf::Mouse::getPosition().x) / (float)window.getSize().x;
+                horizontalAngle += float((int)window.getSize().x / 2 -
+                                         sf::Mouse::getPosition().x) / (float)window.getSize().x;
                 vertical_angle += float((int)window.getSize().y / 2 -
                                         sf::Mouse::getPosition().y) / (float)window.getSize().y;
 
-                if(horizontal_angle > M_PI) {
-                    horizontal_angle = -M_PI + fmod(horizontal_angle, M_PI);
+                if(horizontalAngle > M_PI) {
+                    horizontalAngle = -M_PI + fmod(horizontalAngle, M_PI);
                 }
-                if(horizontal_angle < -M_PI) {
-                    horizontal_angle = M_PI + fmod(horizontal_angle, M_PI);
+                if(horizontalAngle < -M_PI) {
+                    horizontalAngle = M_PI + fmod(horizontalAngle, M_PI);
                 }
-				/*
-		-170*		180*  170*
-				|
-		-90*----+----->x 90*
-				|
-			    \/z
-				0*
-				*/
+                /*
+                -170*  180*  170*
+                        |
+                -90*----+----->x 90*
+                        |
+                       \/z
+                		0*
+                */
 
                 if(vertical_angle < -M_PI / 2)
                     vertical_angle = -M_PI / 2;
@@ -128,11 +130,11 @@ int main() {
                 if(vertical_angle > M_PI / 2)
                     vertical_angle = M_PI / 2;
 
-                direction = glm::vec3(cos(vertical_angle) * sin(horizontal_angle),
+                direction = glm::vec3(cos(vertical_angle) * sin(horizontalAngle),
                                       sin(vertical_angle),
-                                      cos(vertical_angle) * cos(horizontal_angle));
-                right = glm::vec3(-cos(horizontal_angle), 0,
-                                  sin(horizontal_angle));
+                                      cos(vertical_angle) * cos(horizontalAngle));
+                right = glm::vec3(-cos(horizontalAngle), 0,
+                                  sin(horizontalAngle));
 
                 if(mouseClock.getElapsedTime().asMilliseconds() > 50) {
                     sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2));
@@ -158,7 +160,38 @@ int main() {
         //mowing
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             if(gravity) {
-                cameraPos += glm::vec3(direction.x, 0, direction.z) * velocity.x; //?going forward shouldn't case jumping
+                if(horizontalAngle > 0) {
+                    if(map[(int)cameraPos.z][(int)cameraPos.x + 1] == ' ')
+                        cameraPos += glm::vec3(direction.x, 0, 0) * velocity.x;
+                    else {
+                        cameraPos.x = ((int)cameraPos.x);
+                    }
+                }
+
+                if(horizontalAngle < 0) {
+                    if(map[(int)cameraPos.z][(int)cameraPos.x - 1] == ' ')
+                        cameraPos += glm::vec3(direction.x, 0, 0) * velocity.x;
+                    else {
+                        cameraPos.x = ((int)cameraPos.x);
+                    }
+                }
+
+                if(horizontalAngle < M_PI / 2 && horizontalAngle > -M_PI / 2) {
+                    if(map[(int)cameraPos.z + 1][(int)cameraPos.x] == ' ')
+                        cameraPos += glm::vec3(0, 0, direction.z) * velocity.x;
+                    else {
+                        cameraPos.z = cameraPos.z;
+                    }
+                }
+
+                if(horizontalAngle < -M_PI / 2 || horizontalAngle > M_PI / 2) {
+                    if(map[(int)cameraPos.z - 1][(int)cameraPos.x] == ' ')
+                        cameraPos += glm::vec3(0, 0, direction.z) * velocity.x;
+                    else {
+                        cameraPos.z = (int)cameraPos.z;
+                    }
+                }
+
                 if(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)] != ' ')
                     cameraPos -= glm::vec3(direction.x, 0, direction.z) * velocity.x * 1.6f;
             }
@@ -195,20 +228,20 @@ int main() {
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
             cameraPos += glm::vec3(0, -0.1, 0);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            horizontal_angle -= 0.3;
-            direction = glm::vec3(cos(vertical_angle) * sin(horizontal_angle),
+            horizontalAngle -= 0.3;
+            direction = glm::vec3(cos(vertical_angle) * sin(horizontalAngle),
                                   sin(vertical_angle),
-                                  cos(vertical_angle) * cos(horizontal_angle));
-            right = glm::vec3(-cos(horizontal_angle), 0,
-                              sin(horizontal_angle));
+                                  cos(vertical_angle) * cos(horizontalAngle));
+            right = glm::vec3(-cos(horizontalAngle), 0,
+                              sin(horizontalAngle));
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            horizontal_angle += 0.3;
-            direction = glm::vec3(cos(vertical_angle) * sin(horizontal_angle),
+            horizontalAngle += 0.3;
+            direction = glm::vec3(cos(vertical_angle) * sin(horizontalAngle),
                                   sin(vertical_angle),
-                                  cos(vertical_angle) * cos(horizontal_angle));
-            right = glm::vec3(-cos(horizontal_angle), 0,
-                              sin(horizontal_angle));
+                                  cos(vertical_angle) * cos(horizontalAngle));
+            right = glm::vec3(-cos(horizontalAngle), 0,
+                              sin(horizontalAngle));
         }
 
         //gravity
@@ -285,6 +318,6 @@ int main() {
         glEnd();
 
         window.display();
-        window.setTitle(std::to_string(fpsCounter()) + "@Wolf3D:" + std::to_string(FOV) + std::to_string(cameraPos.x) + ":" + std::to_string(cameraPos.y) + ":" + std::to_string(cameraPos.z) + ";" + std::to_string(horizontal_angle * 180 / M_PI));
+        window.setTitle(std::to_string(fpsCounter()) + "@Wolf3D:" + std::to_string(FOV) + std::to_string(cameraPos.x) + ":" + std::to_string(cameraPos.y) + ":" + std::to_string(cameraPos.z) + ";" + std::to_string(horizontalAngle * 180 / M_PI));
     }
 }

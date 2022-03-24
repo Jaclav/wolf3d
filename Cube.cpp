@@ -48,5 +48,4 @@ void Cube::setTexture(std::string path) {
         assert(mTexture.loadFromFile("rsc/notFound.png"));
     }
     mShader.setUniform("texture2D", mTexture);
-    mTexture.setSmooth(true);
 }
