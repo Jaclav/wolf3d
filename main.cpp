@@ -151,15 +151,26 @@ int main() {
                 cameraPos += direction * velocity.x;
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            if(gravity)
+            if(gravity) {
                 cameraPos -= glm::vec3(direction.x, 0, direction.z) * velocity.x;
+                if(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)] != ' ')
+                    cameraPos += glm::vec3(direction.x, 0, direction.z) * velocity.x * 1.6f;
+            }
             else
                 cameraPos -= direction * velocity.x;
         }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))
-            cameraPos -= right * velocity;
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-            cameraPos += right * velocity;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            cameraPos -= right * velocity.x;
+            if(gravity)
+                if(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)] != ' ')
+                    cameraPos += right * velocity.x * 1.6f;
+        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            cameraPos += right * velocity.x;
+            if(gravity)
+                if(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)] != ' ')
+                    cameraPos -= right * velocity.x * 1.6f;
+        }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
             if(velocity.y == 0)
                 velocity.y = 3;
@@ -192,12 +203,14 @@ int main() {
             cameraPos.y += velocity.y * gravityClock.getElapsedTime().asMilliseconds() / 1000.0f;
             gravityClock.restart();
         }
+
         //cannot go under ground
         if(cameraPos.y < 0.5 && gravity) {
             cameraPos.y = 0.5;
             velocity.y = 0;
         }
-        //drawing
+
+        ///*drawing
         viewMatrix = glm::lookAt(cameraPos, cameraPos + direction, glm::cross(right, direction));
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -257,15 +270,6 @@ int main() {
         glEnd();
 
         window.display();
-        for(int z = 0; z < 6; z++) {
-            for(int x = 0; x < 8; x++) {
-                if(x == (int)cameraPos.x && z == (int)cameraPos.z)
-                    std::cout << '|';
-                else
-                    std::cout << map[z][x];
-            }
-            std::cout << '\n';
-        }
         window.setTitle(std::to_string(fpsCounter()) + "@Wolf3D:" + std::to_string(FOV) + std::to_string(cameraPos.x) + ":" + std::to_string(cameraPos.y) + ":" + std::to_string(cameraPos.z));
     }
 }
