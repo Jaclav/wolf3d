@@ -55,16 +55,16 @@ int main() {
     brick.setTexture("rsc/Brick.jpg");
 
     Cube wood;
-    wood.setTexture("pics/wood.png");
+    wood.setTexture("rsc/wood.png");
 
     Cube redBrick;
-    redBrick.setTexture("pics/redbrick.png");
+    redBrick.setTexture("rsc/redbrick.png");
 
     Cube blueStone;
-    blueStone.setTexture("pics/bluestone.png");
+    blueStone.setTexture("rsc/bluestone.png");
 
     Cube eagle;
-    eagle.setTexture("pics/eagle.png");
+    eagle.setTexture("rsc/eagle.png");
 
     Cube notFound;
     notFound.setTexture("rsc/notFound.png");
