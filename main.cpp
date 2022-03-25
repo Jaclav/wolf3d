@@ -38,16 +38,18 @@ int main() {
     glCullFace(GL_BACK);
     glPointSize(20.0);
 
-    std::vector<std::string> map = {"@@@@####",
-                                    "@   @  #",
-                                    "%   !  #",
-                                    "@  !!  #",
-                                    "@      #",
-                                    "$$ $$$$$",
-                                    "#      #",
-                                    "#   $  #",
-                                    "#   $  #",
-                                    "########",
+    std::vector<std::string> map = {"#@@@####!!",
+                                    "@   @     !",
+                                    "%   !  #! !",
+                                    "@  !!  #! !",
+                                    "@      #! !",
+                                    "$$ $$$$$! !",
+                                    "$      !! !",
+                                    "$   $  %  !",
+                                    "$   $  !! !",
+                                    "$ $$$$$$$ !",
+                                    "@         !",
+                                    "@@@@@@@@@@"
                                    };//! (x,y) element of map is map[z][x]
 
     //Cube
@@ -79,7 +81,7 @@ int main() {
 
     //camera
     sf::Clock gravityClock;
-    glm::vec3 velocity = glm::vec3(0.1); //! x is velocity for x and y
+    glm::vec3 velocity = glm::vec3(0.03); //! x is velocity for x and y
     bool gravity = true;
     glm::vec3 direction(0.0, 0, 0);
     glm::vec3 right(0, 0, 0);
@@ -160,17 +162,17 @@ int main() {
             }
         }//end event
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-            velocity.x = 0.3;
-            velocity.z = 0.3;
+            velocity.x = 0.06;
+            velocity.z = 0.06;
         }
         else {
-            velocity.x = 0.1;
-            velocity.z = 0.1;
+            velocity.x = 0.03;
+            velocity.z = 0.03;
         }
         //mowing
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             if(gravity) {
-                if(horizontalAngle > 0) {
+                /*if(horizontalAngle > 0) {
                     if(map[(int)cameraPos.z][(int)cameraPos.x + 1] == ' ')
                         cameraPos += glm::vec3(direction.x, 0, 0) * velocity.x;
                     else {
@@ -200,10 +202,11 @@ int main() {
                     else {
                         cameraPos.z = (int)cameraPos.z;
                     }
-                }
+                }*/
 
+                cameraPos += glm::vec3(direction.x, 0, direction.z) * velocity.x * 1.6f;
                 if(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)] != ' ')
-                    cameraPos -= glm::vec3(direction.x, 0, direction.z) * velocity.x * 1.6f;
+                    cameraPos -= glm::vec3(direction.x, 0, direction.z) * velocity.x * 2.0f;
             }
             else
                 cameraPos += direction * velocity.x;
