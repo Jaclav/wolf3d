@@ -152,9 +152,9 @@ int main() {
                 }
             }
             if(event.type == sf::Event::MouseWheelMoved) {
-                if(event.mouseWheel.delta > 0)
+                if(event.mouseWheel.delta > 0 && FOV > 69.3f)
                     FOV -= 0.1f;
-                else if(event.mouseWheel.delta < 0)
+                else if(event.mouseWheel.delta < 0 && FOV < 72.1)
                     FOV += 0.1f;
                 perspectiveMatrix = glm::perspective(FOV, aspect, P1, P2);
             }
@@ -305,9 +305,9 @@ int main() {
                 blueStone.draw(perspectiveMatrix * viewMatrix);
             }
             break;
-			case '%': {
-            	eagle.setPosition(i);
-            	eagle.draw(perspectiveMatrix * viewMatrix);
+            case '%': {
+                eagle.setPosition(i);
+                eagle.draw(perspectiveMatrix * viewMatrix);
             }
             break;
             default: {
@@ -338,6 +338,6 @@ int main() {
         glEnd();
 
         window.display();
-        window.setTitle(std::to_string(fpsCounter()) + "@Wolf3D:" + std::to_string(FOV) + std::to_string(cameraPos.x) + ":" + std::to_string(cameraPos.y) + ":" + std::to_string(cameraPos.z) + ";" + std::to_string(horizontalAngle * 180 / M_PI));
+        window.setTitle(std::to_string(fpsCounter()) + "@Wolf3D:" + std::to_string(cameraPos.x) + ":" + std::to_string(cameraPos.y) + ":" + std::to_string(cameraPos.z) + ";" + std::to_string(horizontalAngle * 180 / M_PI));
     }
 }
