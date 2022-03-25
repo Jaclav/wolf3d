@@ -38,13 +38,17 @@ int main() {
     glCullFace(GL_BACK);
     glPointSize(20.0);
 
-    std::string map[] = {"########",
-                         "#   #  #",
-                         "@   !  #",
-                         "@  !!  #",
-                         "@      #",
-                         "########"
-                        };//! (x,y) element of map is map[z][x]
+    std::vector<std::string> map = {"@@@@####",
+                                    "@   @  #",
+                                    "%   !  #",
+                                    "@  !!  #",
+                                    "@      #",
+                                    "$$ $$$$$",
+                                    "#      #",
+                                    "#   $  #",
+                                    "#   $  #",
+                                    "########",
+                                   };//! (x,y) element of map is map[z][x]
 
     //Cube
     Cube brick;
@@ -56,12 +60,18 @@ int main() {
     Cube redBrick;
     redBrick.setTexture("pics/redbrick.png");
 
+    Cube blueStone;
+    blueStone.setTexture("pics/bluestone.png");
+
+    Cube eagle;
+    eagle.setTexture("pics/eagle.png");
+
     Cube notFound;
     notFound.setTexture("rsc/notFound.png");
 
     std::vector<glm::vec3>positions;
-    for(unsigned int z = 0; z < 6; z++) {
-        for(unsigned int x = 0; x < 8; x++) {
+    for(unsigned int z = 0; z < map.size(); z++) {
+        for(unsigned int x = 0; x < map[z].size(); x++) {
             if(map[z][x] != ' ')
                 positions.push_back(glm::vec3(x, 0, z));
         }
@@ -288,6 +298,16 @@ int main() {
             case '@': {
                 redBrick.setPosition(i);
                 redBrick.draw(perspectiveMatrix * viewMatrix);
+            }
+            break;
+            case '$': {
+                blueStone.setPosition(i);
+                blueStone.draw(perspectiveMatrix * viewMatrix);
+            }
+            break;
+			case '%': {
+            	eagle.setPosition(i);
+            	eagle.draw(perspectiveMatrix * viewMatrix);
             }
             break;
             default: {
