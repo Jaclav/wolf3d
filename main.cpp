@@ -90,7 +90,7 @@ int main() {
     bool gravity = true;
     glm::vec3 direction(0.0, 0, 0);
     glm::vec3 right(0, 0, 0);
-    glm::vec3 cameraPos(1, 0, 4);
+    glm::vec3 cameraPos(2, 0, 3);
 
     glm::mat4 viewMatrix = glm::lookAt(cameraPos, cameraPos + direction, glm::cross(right, direction));
 
@@ -102,7 +102,7 @@ int main() {
     glm::mat4 perspectiveMatrix = glm::perspective(FOV, aspect, P1, P2);
 
     float vertical_angle = 0;
-    float horizontalAngle = M_PI / 2;
+    float horizontalAngle = 0;
     sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2));
     sf::Clock mouseClock;
 
@@ -114,24 +114,27 @@ int main() {
         while(window.pollEvent(event)) {
             if(event.type == sf::Event::Closed)
                 window.close();
+
             if(event.type == sf::Event::KeyPressed) {
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::G)) {
                     gravity = !gravity;
                     gravityClock.restart();
                 }
             }
+
+			//*mouse
             if(event.type == event.MouseMoved) {
                 horizontalAngle += float((int)window.getSize().x / 2 -
                                          sf::Mouse::getPosition().x) / (float)window.getSize().x;
                 vertical_angle += float((int)window.getSize().y / 2 -
                                         sf::Mouse::getPosition().y) / (float)window.getSize().y;
 
-                if(horizontalAngle > M_PI) {
+                if(horizontalAngle > M_PI)
                     horizontalAngle = -M_PI + fmod(horizontalAngle, M_PI);
-                }
-                if(horizontalAngle < -M_PI) {
+
+                if(horizontalAngle < -M_PI)
                     horizontalAngle = M_PI + fmod(horizontalAngle, M_PI);
-                }
+
                 /*
                 -170*  180*  170*
                         |
@@ -166,6 +169,7 @@ int main() {
                 perspectiveMatrix = glm::perspective(FOV, aspect, P1, P2);
             }
         }//end event
+
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
             velocity.x = 0.06;
             velocity.z = 0.06;
@@ -174,7 +178,8 @@ int main() {
             velocity.x = 0.03;
             velocity.z = 0.03;
         }
-        //mowing
+
+        //moving
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             if(gravity) {
                 /*if(horizontalAngle > 0) {
@@ -247,6 +252,12 @@ int main() {
             cameraPos += glm::vec3(0, -0.1, 0);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             horizontalAngle -= 0.06;
+            if(horizontalAngle > M_PI)
+                horizontalAngle = -M_PI + fmod(horizontalAngle, M_PI);
+
+            if(horizontalAngle < -M_PI)
+                horizontalAngle = M_PI + fmod(horizontalAngle, M_PI);
+
             direction = glm::vec3(cos(vertical_angle) * sin(horizontalAngle),
                                   sin(vertical_angle),
                                   cos(vertical_angle) * cos(horizontalAngle));
@@ -255,6 +266,12 @@ int main() {
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             horizontalAngle += 0.06;
+            if(horizontalAngle > M_PI)
+                horizontalAngle = -M_PI + fmod(horizontalAngle, M_PI);
+
+            if(horizontalAngle < -M_PI)
+                horizontalAngle = M_PI + fmod(horizontalAngle, M_PI);
+
             direction = glm::vec3(cos(vertical_angle) * sin(horizontalAngle),
                                   sin(vertical_angle),
                                   cos(vertical_angle) * cos(horizontalAngle));
@@ -276,7 +293,7 @@ int main() {
             velocity.y = 0;
         }
 
-        ///*drawing
+        //*drawing
         viewMatrix = glm::lookAt(cameraPos, cameraPos + direction, glm::cross(right, direction));
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
