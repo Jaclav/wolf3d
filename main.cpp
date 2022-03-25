@@ -40,6 +40,8 @@ int main() {
 
     std::vector<std::string> map = {"#@@@####!!",
                                     "@   @     !",
+                                    "@   @  2  !",
+                                    "@   @     !",
                                     "%   !  #! !",
                                     "@  !!  #! !",
                                     "@      #! !",
@@ -49,7 +51,7 @@ int main() {
                                     "$   $  !! !",
                                     "$ $$$$$$$ !",
                                     "@         !",
-                                    "@@@@@@@@@@"
+                                    "@@@@@@@@2@"
                                    };//! (x,y) element of map is map[z][x]
 
     //Cube
@@ -70,6 +72,9 @@ int main() {
 
     Cube notFound;
     notFound.setTexture("rsc/notFound.png");
+
+    Cube papaj;
+    papaj.setTexture("rsc/papaj.jpg");
 
     std::vector<glm::vec3>positions;
     for(unsigned int z = 0; z < map.size(); z++) {
@@ -241,7 +246,7 @@ int main() {
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
             cameraPos += glm::vec3(0, -0.1, 0);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            horizontalAngle -= 0.3;
+            horizontalAngle -= 0.06;
             direction = glm::vec3(cos(vertical_angle) * sin(horizontalAngle),
                                   sin(vertical_angle),
                                   cos(vertical_angle) * cos(horizontalAngle));
@@ -249,7 +254,7 @@ int main() {
                               sin(horizontalAngle));
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            horizontalAngle += 0.3;
+            horizontalAngle += 0.06;
             direction = glm::vec3(cos(vertical_angle) * sin(horizontalAngle),
                                   sin(vertical_angle),
                                   cos(vertical_angle) * cos(horizontalAngle));
@@ -311,6 +316,11 @@ int main() {
             case '%': {
                 eagle.setPosition(i);
                 eagle.draw(perspectiveMatrix * viewMatrix);
+            }
+            break;
+            case '2': {
+                papaj.setPosition(i);
+                papaj.draw(perspectiveMatrix * viewMatrix);
             }
             break;
             default: {
