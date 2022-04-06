@@ -45,14 +45,22 @@ int main() {
                                     "%   !  #! !",
                                     "@  !!  #! !",
                                     "@      #! !",
-                                    "$$ $$$$$! !",
+                                    "$$ $$$$ ! !",
                                     "$      !! !",
                                     "$   $  %  !",
                                     "$   $  !! !",
-                                    "$ $$$$$$$ !",
+                                    "$ $$$$$$! !",
+                                    "@      $! !",
+                                    "@      $! !",
+                                    "@      $! !",
+                                    "@      $! !",
+                                    "@      $! !",
                                     "@         !",
-                                    "@@@@@@@@2@"
+                                    "@@@@@@@@2!"
                                    };//! (x,y) element of map is map[z][x]
+
+    for(int i = 0; i < 10; i++)
+        map.insert(map.end() - 2, "@      $! !");
 
     //Cube
     Cube brick;
@@ -122,7 +130,7 @@ int main() {
                 }
             }
 
-			//*mouse
+            //*mouse
             if(event.type == event.MouseMoved) {
                 horizontalAngle += float((int)window.getSize().x / 2 -
                                          sf::Mouse::getPosition().x) / (float)window.getSize().x;
@@ -355,6 +363,14 @@ int main() {
         glBegin(GL_POINTS);
         glVertex3f(0.0, 0, 0);
         glEnd();
+
+        /*glBegin(GL_POINTS);
+        for(float x = -4; x < 4; x += 0.1) {
+            for(float y = -4; y < 4; y += 0.1) {
+                glVertex3f(x, y, std::sin(x + y));
+            }
+        }
+        glEnd();*/
 
         glBegin(GL_LINES);
         glVertex3f(0, 0, 0);
