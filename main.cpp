@@ -84,6 +84,57 @@ int main() {
     Cube papaj;
     papaj.setTexture("rsc/papaj.jpg");
 
+    //floor
+    GLuint floorVbo = 0;
+    GLuint floorTextureVbo = 0;
+    GLuint floorVao = 0;
+
+    GLfloat floorPoints[] = {
+        1.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 0.0f,
+        0.0f, 0.0f, 1.0f,
+
+        0.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 0.0f,
+
+    };
+    GLfloat floorTexturePoints[] = {
+        0.0f, 0.0f, // A
+        1.0f, 0.0f, // B
+        1.0f, 1.0f, // C
+        1.0f, 1.0f, // D
+        0.0f, 1.0f, // E
+        0.0f, 0.0f, // F
+    };
+
+    glGenBuffers(1, &floorVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, floorVbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(floorPoints), floorPoints, GL_STATIC_DRAW);
+
+    glGenBuffers(1, &floorTextureVbo);
+    glBindBuffer(GL_ARRAY_BUFFER, floorTextureVbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(floorTexturePoints), &floorTexturePoints, GL_STATIC_DRAW);
+
+    glGenVertexArrays(1, &floorVao);
+    glBindVertexArray(floorVao);
+
+    glBindBuffer(GL_ARRAY_BUFFER, floorVbo);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, floorTextureVbo);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
+    glEnableVertexAttribArray(1);
+
+    sf::Shader floorShader;
+    assert(floorShader.loadFromFile("rsc/shaders/block.vert", "rsc/shaders/block.frag"));
+
+    sf::Texture floorTexture;
+    floorTexture.loadFromFile("rsc/colorstone.png");
+    floorShader.setUniform("texture2D", floorTexture);
+
+
     std::vector<glm::vec3>positions;
     for(unsigned int z = 0; z < map.size(); z++) {
         for(unsigned int x = 0; x < map[z].size(); x++) {
@@ -301,9 +352,19 @@ int main() {
             velocity.y = 0;
         }
 
-        //*drawing
+        //drawing
         viewMatrix = glm::lookAt(cameraPos, cameraPos + direction, glm::cross(right, direction));
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        //floor
+        sf::Shader::bind(&floorShader);
+        for(int x = 0; x < 10; x++) {
+            for(int z = 0; z < 30; z++) {
+                floorShader.setUniform("transformation", sf::Glsl::Mat4(glm::value_ptr(glm::translate(perspectiveMatrix * viewMatrix, glm::vec3(x, 0, z)))));
+                glBindVertexArray(floorVao);
+                glDrawArrays(GL_TRIANGLES, 0, sizeof(floorPoints) / 3);
+            }
+        }
 
         std::sort(positions.begin(), positions.end(), [&](glm::vec3 a, glm::vec3 b) {
             if((a.x - cameraPos.x) * (a.x - cameraPos.x) +
@@ -363,14 +424,6 @@ int main() {
         glBegin(GL_POINTS);
         glVertex3f(0.0, 0, 0);
         glEnd();
-
-        /*glBegin(GL_POINTS);
-        for(float x = -4; x < 4; x += 0.1) {
-            for(float y = -4; y < 4; y += 0.1) {
-                glVertex3f(x, y, std::sin(x + y));
-            }
-        }
-        glEnd();*/
 
         glBegin(GL_LINES);
         glVertex3f(0, 0, 0);
