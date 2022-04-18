@@ -47,5 +47,5 @@ void Cube::setTexture(std::string path) {
     if(!mTexture.loadFromFile(path)) {
         assert(mTexture.loadFromFile("rsc/notFound.png"));
     }
-    mShader.setUniform("texture2D", mTexture);
+    mShader.setUniform("texture", mTexture);
 }

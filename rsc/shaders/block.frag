@@ -3,8 +3,12 @@
 out vec4 color;
 
 in vec2 textureCoord;
-uniform sampler2D texture2D;
+uniform sampler2D texture;
 
 void main() {
-	color = texture(texture2D, textureCoord);
+	color = texture2D(texture, textureCoord);
+
+	if(color.a == 0) {
+		discard;
+	}
 }

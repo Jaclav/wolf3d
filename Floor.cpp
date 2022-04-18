@@ -23,7 +23,7 @@ Floor::Floor() {
     assert(floorShader.loadFromFile("rsc/shaders/block.vert", "rsc/shaders/block.frag"));
 
     floorTexture.loadFromFile("rsc/colorstone.png");
-    floorShader.setUniform("texture2D", floorTexture);
+    floorShader.setUniform("texture", floorTexture);
 }
 
 void Floor::draw(glm::mat4 transformation) {
