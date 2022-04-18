@@ -58,11 +58,12 @@ int main() {
                                     "@      $! !",
                                     "@      $! !",
                                     "@         !",
-                                    "@@@@@@@@s!"
+                                    "@@@@@@@@s!",
+                                    "        @",
                                    };//! (x,y) element of map is map[z][x]
 
     for(int i = 0; i < 10; i++)
-        map.insert(map.end() - 2, "@      $! !");
+        map.insert(map.end() - 3, "@      $! !");
 
     std::vector<glm::vec3>positions;
     for(unsigned int z = 0; z < map.size(); z++) {

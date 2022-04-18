@@ -35,7 +35,7 @@ void Cube::draw(glm::mat4 transformation) {
     mShader.setUniform("transformation", sf::Glsl::Mat4(glm::value_ptr(glm::translate(transformation, position))));
 
     glBindVertexArray(vao);
-	//TODO: don't draw not displayed walls
+    //TODO: don't draw not displayed walls
     glDrawArrays(GL_TRIANGLES, 0, sizeof(points) / 3);
 }
 
