@@ -1,13 +1,9 @@
 #ifndef CUBE_HPP
 #define CUBE_HPP
 
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-#include <SFML/Graphics/Shader.hpp>
-#include <SFML/Graphics/Texture.hpp>
+#include "Object.hpp"
 
-class Cube {
+class Cube : Object {
 public:
     Cube();
     Cube(glm::vec3 position);
@@ -106,7 +102,7 @@ private:
         0, 1.0, // E
         0, 0, // F
 
-		//TODO: good way, change points
+        //TODO: good way, change points
         1.0, 1.0, // C
         1.0, 0, // B
         0, 0, // A
