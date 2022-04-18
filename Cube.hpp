@@ -106,6 +106,7 @@ private:
         0, 1.0, // E
         0, 0, // F
 
+		//TODO: good way, change points
         1.0, 1.0, // C
         1.0, 0, // B
         0, 0, // A

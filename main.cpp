@@ -62,6 +62,14 @@ int main() {
     for(int i = 0; i < 10; i++)
         map.insert(map.end() - 2, "@      $! !");
 
+    std::vector<glm::vec3>positions;
+    for(unsigned int z = 0; z < map.size(); z++) {
+        for(unsigned int x = 0; x < map[z].size(); x++) {
+            if(map[z][x] != ' ')
+                positions.push_back(glm::vec3(x, 0, z));
+        }
+    }
+
     //Cube
     Cube brick;
     brick.setTexture("rsc/Brick.jpg");
@@ -133,15 +141,6 @@ int main() {
     sf::Texture floorTexture;
     floorTexture.loadFromFile("rsc/colorstone.png");
     floorShader.setUniform("texture2D", floorTexture);
-
-
-    std::vector<glm::vec3>positions;
-    for(unsigned int z = 0; z < map.size(); z++) {
-        for(unsigned int x = 0; x < map[z].size(); x++) {
-            if(map[z][x] != ' ')
-                positions.push_back(glm::vec3(x, 0, z));
-        }
-    }
 
     //camera
     sf::Clock gravityClock;
