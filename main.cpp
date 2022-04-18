@@ -40,7 +40,7 @@ int main() {
 
     std::vector<std::string> map = {"#@@@####!!",
                                     "@   @     !",
-                                    "@   @  2  !",
+                                    "@   @  s  !",
                                     "@   @     !",
                                     "%   !  #! !",
                                     "@  !!  #! !",
@@ -56,7 +56,7 @@ int main() {
                                     "@      $! !",
                                     "@      $! !",
                                     "@         !",
-                                    "@@@@@@@@2!"
+                                    "@@@@@@@@s!"
                                    };//! (x,y) element of map is map[z][x]
 
     for(int i = 0; i < 10; i++)
@@ -81,8 +81,8 @@ int main() {
     Cube notFound;
     notFound.setTexture("rsc/notFound.png");
 
-    Cube papaj;
-    papaj.setTexture("rsc/papaj.jpg");
+    Cube stasio;
+    stasio.setTexture("rsc/stasio.png");
 
     //floor
     GLuint floorVbo = 0;
@@ -404,9 +404,9 @@ int main() {
                 eagle.draw(perspectiveMatrix * viewMatrix);
             }
             break;
-            case '2': {
-                papaj.setPosition(i);
-                papaj.draw(perspectiveMatrix * viewMatrix);
+            case 's': {
+                stasio.setPosition(i);
+                stasio.draw(perspectiveMatrix * viewMatrix);
             }
             break;
             default: {
