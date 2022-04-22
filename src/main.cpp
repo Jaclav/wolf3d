@@ -26,7 +26,7 @@ float fpsCounter(void) {
 }
 
 int main() {
-    sf::Window window(sf::VideoMode::getDesktopMode(), "Wolf3D", sf::Style::Default, sf::ContextSettings(24, 8, 8, 4, 6));
+    sf::Window window(sf::VideoMode::getDesktopMode(), "Wolf3D", sf::Style::Fullscreen, sf::ContextSettings(24, 8, 8, 4, 6));
     window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(true);
 
@@ -101,7 +101,7 @@ int main() {
     //camera
     sf::Clock gravityClock;
     glm::vec3 velocity = glm::vec3(0.03); //! x is velocity for x and y
-    bool gravity = true;
+    bool noclip = false;
     glm::vec3 direction(0.0, 0, 0);
     glm::vec3 right(0, 0, 0);
     glm::vec3 cameraPos(2, 0, 3);
@@ -126,12 +126,12 @@ int main() {
 
     while(window.isOpen()) {
         while(window.pollEvent(event)) {
-            if(event.type == sf::Event::Closed)
+            if(event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
                 window.close();
 
             if(event.type == sf::Event::KeyPressed) {
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::G)) {
-                    gravity = !gravity;
+                    noclip = !noclip;
                     gravityClock.restart();
                 }
             }
@@ -148,15 +148,6 @@ int main() {
 
                 if(horizontalAngle < -M_PI)
                     horizontalAngle = M_PI + fmod(horizontalAngle, M_PI);
-
-                /*
-                -170*  180*  170*
-                        |
-                -90*----+----->x 90*
-                        |
-                       \/z
-                		0*
-                */
 
                 if(vertical_angle < -M_PI / 2)
                     vertical_angle = -M_PI / 2;
@@ -195,7 +186,7 @@ int main() {
 
         //moving
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-            if(gravity) {
+            if(!noclip) {
                 /*if(horizontalAngle > 0) {
                     if(map[(int)cameraPos.z][(int)cameraPos.x + 1] == ' ')
                         cameraPos += glm::vec3(direction.x, 0, 0) * velocity.x;
@@ -236,7 +227,7 @@ int main() {
                 cameraPos += direction * velocity.x;
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            if(gravity) {
+            if(!noclip) {
                 cameraPos -= glm::vec3(direction.x, 0, direction.z) * velocity.x;
                 if(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)] != ' ')
                     cameraPos += glm::vec3(direction.x, 0, direction.z) * velocity.x * 1.6f;
@@ -246,20 +237,20 @@ int main() {
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
             cameraPos -= right * velocity.x;
-            if(gravity)
+            if(!noclip)
                 if(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)] != ' ')
                     cameraPos += right * velocity.x * 1.6f;
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
             cameraPos += right * velocity.x;
-            if(gravity)
+            if(!noclip)
                 if(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)] != ' ')
                     cameraPos -= right * velocity.x * 1.6f;
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
             if(velocity.y == 0)
                 velocity.y = 3;
-            if(!gravity)
+            if(!!noclip)
                 cameraPos += glm::vec3(0, 0.3, 0);
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
@@ -293,8 +284,8 @@ int main() {
                               sin(horizontalAngle));
         }
 
-        //gravity
-        if(gravity) {
+        //!noclip
+        if(!noclip) {
             if(cameraPos.y > 0.5)
                 velocity.y -= gravityClock.getElapsedTime().asMilliseconds() / 1000.0f * 10;
             cameraPos.y += velocity.y * gravityClock.getElapsedTime().asMilliseconds() / 1000.0f;
@@ -302,7 +293,7 @@ int main() {
         }
 
         //cannot go under ground
-        if(cameraPos.y < 0.5 && gravity) {
+        if(cameraPos.y < 0.5 && !noclip) {
             cameraPos.y = 0.5;
             velocity.y = 0;
         }
