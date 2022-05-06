@@ -3,7 +3,7 @@
 
 #include "Object.hpp"
 
-class Floor : Object {
+class Floor : public Object {
 public:
     Floor();
     void draw(glm::mat4 transformation);

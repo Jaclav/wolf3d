@@ -3,7 +3,7 @@
 
 #include "Object.hpp"
 
-class Cube : Object {
+class Cube : public Object {
 public:
     Cube();
     Cube(glm::vec3 position);

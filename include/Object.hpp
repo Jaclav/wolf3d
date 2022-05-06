@@ -8,6 +8,7 @@
 #include <SFML/Graphics/Texture.hpp>
 
 class Object {
+public:
     virtual void draw(glm::mat4 transformation) = 0;
     virtual void setPosition(glm::vec3 position) = 0;
 };
