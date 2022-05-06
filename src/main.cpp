@@ -1,4 +1,3 @@
-//TODO: create render target, get its texture and draw it in opengl f.e. console terminal
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -8,22 +7,7 @@
 #include <SFML/Graphics.hpp>
 #include "Cube.hpp"
 #include "Floor.hpp"
-
-float fpsCounter(void) {
-    static sf::Clock clck;
-    static int numberOfSample = 0;
-    static float toReturn = 0;
-
-    numberOfSample++;
-
-    if(clck.getElapsedTime().asMilliseconds() >= 1000) {
-        toReturn = (numberOfSample * 1000.0f ) / clck.getElapsedTime().asMilliseconds();
-        clck.restart();
-        numberOfSample = 0;
-    }
-
-    return toReturn;
-}
+#include "GUI.hpp"
 
 int main() {
     sf::Window window(sf::VideoMode::getDesktopMode(), "Wolf3D", sf::Style::Fullscreen, sf::ContextSettings(24, 8, 8, 4, 6));
@@ -38,7 +22,9 @@ int main() {
     glFrontFace(GL_CCW);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+
     glPointSize(20.0);
+    glLineWidth(10.0);
 
     std::vector<std::string> map = {"#@@@####!!",
                                     "@   @     !",
@@ -124,6 +110,10 @@ int main() {
     sf::Shader positionShader;
     assert(positionShader.loadFromFile("rsc/shaders/position.vert", "rsc/shaders/position.frag"));
 
+    //GUI
+    GUI gui(window);
+    bool showGUI = false;
+
     while(window.isOpen()) {
         while(window.pollEvent(event)) {
             if(event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -133,6 +123,10 @@ int main() {
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::G)) {
                     noclip = !noclip;
                     gravityClock.restart();
+                }
+                if(sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde)) {
+                    showGUI = !showGUI;
+                    break;
                 }
             }
 
@@ -359,28 +353,35 @@ int main() {
             }
             }
         }
+        if(showGUI) {
+            //dimension lines
+            sf::Shader::bind(&positionShader);
+            positionShader.setUniform("transformation", sf::Glsl::Mat4(glm::value_ptr(
+                                          perspectiveMatrix * viewMatrix)));
 
-        //dimension lines
-        sf::Shader::bind(&positionShader);
-        positionShader.setUniform("transformation", sf::Glsl::Mat4(glm::value_ptr(
-                                      perspectiveMatrix * viewMatrix)));
+            glBegin(GL_POINTS);
+            glVertex3f(0.0, 0, 0);
+            glEnd();
 
-        glBegin(GL_POINTS);
-        glVertex3f(0.0, 0, 0);
-        glEnd();
+            glBegin(GL_LINES);
+            glVertex3f(0, 0, 0);
+            glVertex3f(1, 0, 0);
 
-        glBegin(GL_LINES);
-        glVertex3f(0, 0, 0);
-        glVertex3f(1, 0, 0);
+            glVertex3f(0, 0, 0);
+            glVertex3f(0, 1, 0);
 
-        glVertex3f(0, 0, 0);
-        glVertex3f(0, 1, 0);
+            glVertex3f(0, 0, 0);
+            glVertex3f(0, 0, 1);
+            glEnd();
 
-        glVertex3f(0, 0, 0);
-        glVertex3f(0, 0, 1);
-        glEnd();
+            gui.draw(window, L" FPS\nX = " + std::to_wstring(cameraPos.x) +
+                     L"\nY = " + std::to_wstring(cameraPos.y) +
+                     L"\nZ = " + std::to_wstring(cameraPos.z) +
+                     L"\nθ = " + std::to_wstring(horizontalAngle * 180 / M_PI) +
+                     L"\nφ = " + std::to_wstring(vertical_angle * 180 / M_PI));
+        }
 
         window.display();
-        window.setTitle(std::to_string(fpsCounter()) + "@Wolf3D:" + std::to_string(cameraPos.x) + ":" + std::to_string(cameraPos.y) + ":" + std::to_string(cameraPos.z) + ";" + std::to_string(horizontalAngle * 180 / M_PI));
     }
+    return 0;
 }
