@@ -12,14 +12,14 @@ public:
 private:
     glm::vec3 position;
 
-    GLuint floorVbo = 0;
-    GLuint floorTextureVbo = 0;
-    GLuint floorVao = 0;
+    GLuint mVbo = 0;
+    GLuint mTextureVbo = 0;
+    GLuint mVao = 0;
 
-    sf::Shader floorShader;
-    sf::Texture floorTexture;
+    sf::Shader mShader;
+    sf::Texture mTexture;
 
-    const GLfloat floorPoints[18] = {
+    const GLfloat mPoints[18] = {
         1.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 0.0f,
         0.0f, 0.0f, 1.0f,
@@ -30,7 +30,7 @@ private:
 
     };
 
-    const GLfloat floorTexturePoints[12] = {
+    const GLfloat mTexturePoints[12] = {
         0.0f, 0.0f, // A
         1.0f, 0.0f, // B
         1.0f, 1.0f, // C
