@@ -75,7 +75,7 @@ int main() {
 
     //Cube
     Cube brick;
-    brick.setTexture("rsc/Brick.jpg");
+    brick.setTexture("rsc/Brick.jpg", true);
 
     Cube wood;
     wood.setTexture("rsc/wood.png");
@@ -93,7 +93,7 @@ int main() {
     notFound.setTexture("rsc/notFound.png");
 
     Cube stasio;
-    stasio.setTexture("rsc/stasio.png");
+    stasio.setTexture("rsc/stasio.png", true);
 
     //floor
     Floor floor;

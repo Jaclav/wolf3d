@@ -10,7 +10,7 @@ public:
 
     void draw(glm::mat4 transformation);
     void setPosition(glm::vec3 position);
-    void setTexture(std::string path);
+    void setTexture(std::string path, bool smooth = false);
 
 private:
     glm::vec3 position;

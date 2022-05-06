@@ -43,9 +43,10 @@ void Cube::setPosition(glm::vec3 position) {
     Cube::position = position;
 }
 
-void Cube::setTexture(std::string path) {
+void Cube::setTexture(std::string path, bool smooth) {
     if(!mTexture.loadFromFile(path)) {
         assert(mTexture.loadFromFile("rsc/notFound.png"));
     }
+    mTexture.setSmooth(smooth);
     mShader.setUniform("texture", mTexture);
 }
