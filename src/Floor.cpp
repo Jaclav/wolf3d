@@ -22,7 +22,7 @@ Floor::Floor() {
 
     assert(mShader.loadFromFile("rsc/shaders/block.vert", "rsc/shaders/block.frag"));
 
-    mTexture.loadFromFile("rsc/colorstone.png");
+    assert(mTexture.loadFromFile("rsc/floor.png"));
     mShader.setUniform("texture", mTexture);
 }
 
