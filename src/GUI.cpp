@@ -1,6 +1,6 @@
 #include "GUI.hpp"
 
-std::wstring GUI::data = L"";
+std::wstring GUI::log = L"";
 
 GUI::GUI(const sf::Window &window) {
     assert(interface.create(window.getSize().x, window.getSize().y, window.getSettings()));
@@ -33,7 +33,7 @@ GUI::GUI(const sf::Window &window) {
     return;
 }
 
-void GUI::draw(const sf::Window &window) {
+void GUI::draw(const sf::Window &window, const std::wstring data) {
     mShader.setUniform("texture", interface.getTexture());
     sf::Shader::bind(&mShader);
     glBindVertexArray(mVao);
@@ -43,9 +43,8 @@ void GUI::draw(const sf::Window &window) {
     interface.setActive(true);
 
     interface.clear(sf::Color::Transparent);
-    text.setString(L"FPS = " + std::to_wstring(fpsCounter()) + L"\n" + data);
+    text.setString(L"FPS = " + std::to_wstring(fpsCounter()) + L"\n" + data + L"\nLog:\n" + log);
     interface.draw(text);
-    data = L"";
     interface.display();
 
     interface.setActive(false);
@@ -68,6 +67,6 @@ float GUI::fpsCounter(void) {
 
     return toReturn;
 }
-void GUI::print(std::wstring data) {
-    GUI::data += data + L"\n";
+void GUI::print(std::wstring message) {
+    log += message + L"\n";
 }

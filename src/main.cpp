@@ -19,6 +19,9 @@ bool collision(char block) {
 }
 
 int main() {
+    static const std::string startMessage("Starting compilation: " + std::string(__DATE__) + " - " + std::string(__TIME__));
+    GUI::print(std::wstring(startMessage.begin(), startMessage.end()));
+
     sf::Window window(sf::VideoMode::getDesktopMode(), "Wolf3D", sf::Style::Fullscreen, sf::ContextSettings(24, 8, 8, 4, 6));
     window.setFramerateLimit(60);
     window.setMouseCursorVisible(false);
@@ -395,13 +398,12 @@ int main() {
             glVertex3f(0, 0, 1);
             glEnd();
 
-            gui.print(L"X = " + std::to_wstring(cameraPos.x) +
-                      L"\nY = " + std::to_wstring(cameraPos.y) +
-                      L"\nZ = " + std::to_wstring(cameraPos.z) +
-                      L"\nθ = " + std::to_wstring(horizontalAngle * 180 / M_PI) +
-                      L"\nφ = " + std::to_wstring(vertical_angle * 180 / M_PI) +
-                      L"\nFOV = " + std::to_wstring(FOV));
-            gui.draw(window);
+            gui.draw(window, L"X = " + std::to_wstring(cameraPos.x) +
+                     L"\nY = " + std::to_wstring(cameraPos.y) +
+                     L"\nZ = " + std::to_wstring(cameraPos.z) +
+                     L"\nθ = " + std::to_wstring(horizontalAngle * 180 / M_PI) +
+                     L"\nφ = " + std::to_wstring(vertical_angle * 180 / M_PI) +
+                     L"\nFOV = " + std::to_wstring(FOV));
         }
 
         window.display();
