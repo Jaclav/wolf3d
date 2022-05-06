@@ -27,7 +27,7 @@ GUI::GUI(const sf::Window &window) {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, NULL);
     glEnableVertexAttribArray(1);
 
-    assert(mShader.loadFromFile("rsc/shaders/static.vert", "rsc/shaders/static.frag"));
+    assert(mShader.loadFromFile("rsc/shaders/static.vert", "rsc/shaders/block.frag"));
     return;
 }
 

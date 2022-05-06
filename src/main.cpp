@@ -378,7 +378,8 @@ int main() {
                      L"\nY = " + std::to_wstring(cameraPos.y) +
                      L"\nZ = " + std::to_wstring(cameraPos.z) +
                      L"\nθ = " + std::to_wstring(horizontalAngle * 180 / M_PI) +
-                     L"\nφ = " + std::to_wstring(vertical_angle * 180 / M_PI));
+                     L"\nφ = " + std::to_wstring(vertical_angle * 180 / M_PI) +
+                     L"\nFOV = " + std::to_wstring(FOV));
         }
 
         window.display();
