@@ -10,8 +10,9 @@
 class GUI {
 public:
     GUI(const sf::Window &window);
-    void draw(const sf::Window &window, const std::wstring data);
+    void draw(const sf::Window &window);
     float fpsCounter(void);
+    static void print(std::wstring data);
 
 private:
     sf::RenderTexture interface;
@@ -19,6 +20,7 @@ private:
 
     sf::Font font;
     sf::Text text;
+	static std::wstring data;
 
     GLuint mVbo = 0;
     GLuint mTextureVbo = 0;

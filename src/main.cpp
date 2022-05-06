@@ -7,11 +7,21 @@
 #include <SFML/Graphics.hpp>
 #include "Cube.hpp"
 #include "Floor.hpp"
+#include "Flat.hpp"
 #include "GUI.hpp"
+
+bool noclip = false;
+
+bool collision(char block) {
+    if(block == ' ' || block == 'l' || noclip)
+        return false;
+    return true;
+}
 
 int main() {
     sf::Window window(sf::VideoMode::getDesktopMode(), "Wolf3D", sf::Style::Fullscreen, sf::ContextSettings(24, 8, 8, 4, 6));
     window.setFramerateLimit(60);
+    window.setMouseCursorVisible(false);
     window.setVerticalSyncEnabled(true);
 
     sf::Event event;
@@ -27,23 +37,23 @@ int main() {
     glLineWidth(10.0);
 
     std::vector<std::string> map = {"#@@@####!!",
-                                    "@   @     !",
+                                    "@  b@     !",
                                     "@   @  s  !",
                                     "@   @     !",
-                                    "%   !  #! !",
+                                    "%  b!  #! !",
                                     "@  !!  #! !",
                                     "@      #! !",
                                     "$$ $$$$ ! !",
                                     "$      !! !",
-                                    "$   $  %  !",
+                                    "$   $  % l!",
                                     "$   $  !! !",
                                     "$ $$$$$$! !",
+                                    "@     b$! !",
+                                    "@   l  $! !",
                                     "@      $! !",
+                                    "@   l  $! !",
                                     "@      $! !",
-                                    "@      $! !",
-                                    "@      $! !",
-                                    "@      $! !",
-                                    "@         !",
+                                    "@   l     !",
                                     "@@@@@@@@s!",
                                     "        @",
                                    };//! (x,y) element of map is map[z][x]
@@ -81,13 +91,18 @@ int main() {
     Cube stasio;
     stasio.setTexture("rsc/stasio.png", true);
 
+    Flat light;
+    light.setTexture("rsc/greenlight.png");
+
+    Flat barrel;
+    barrel.setTexture("rsc/barrel.png");
+
     //floor
     Floor floor;
 
     //camera
     sf::Clock gravityClock;
-    glm::vec3 velocity = glm::vec3(0.03); //! x is velocity for x and y
-    bool noclip = false;
+    glm::vec3 velocity = glm::vec3(0.03); //! X is velocity for X and Z
     glm::vec3 direction(0.0, 0, 0);
     glm::vec3 right(0, 0, 0);
     glm::vec3 cameraPos(2, 0, 3);
@@ -171,11 +186,9 @@ int main() {
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
             velocity.x = 0.06;
-            velocity.z = 0.06;
         }
         else {
             velocity.x = 0.03;
-            velocity.z = 0.03;
         }
 
         //moving
@@ -214,7 +227,7 @@ int main() {
                 }*/
 
                 cameraPos += glm::vec3(direction.x, 0, direction.z) * velocity.x * 1.6f;
-                if(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)] != ' ')
+                if(collision(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)]))
                     cameraPos -= glm::vec3(direction.x, 0, direction.z) * velocity.x * 2.0f;
             }
             else
@@ -223,7 +236,7 @@ int main() {
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
             if(!noclip) {
                 cameraPos -= glm::vec3(direction.x, 0, direction.z) * velocity.x;
-                if(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)] != ' ')
+                if(collision(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)]))
                     cameraPos += glm::vec3(direction.x, 0, direction.z) * velocity.x * 1.6f;
             }
             else
@@ -231,15 +244,13 @@ int main() {
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
             cameraPos -= right * velocity.x;
-            if(!noclip)
-                if(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)] != ' ')
-                    cameraPos += right * velocity.x * 1.6f;
+            if(collision(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)]))
+                cameraPos += right * velocity.x * 1.6f;
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
             cameraPos += right * velocity.x;
-            if(!noclip)
-                if(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)] != ' ')
-                    cameraPos -= right * velocity.x * 1.6f;
+            if(collision(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)]))
+                cameraPos -= right * velocity.x * 1.6f;
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
             if(velocity.y == 0)
@@ -347,6 +358,16 @@ int main() {
                 stasio.draw(perspectiveMatrix * viewMatrix);
             }
             break;
+            case 'l': {
+                light.setPosition(i);
+                light.draw(perspectiveMatrix * viewMatrix, cameraPos);
+            }
+            break;
+            case 'b': {
+                barrel.setPosition(i);
+                barrel.draw(perspectiveMatrix * viewMatrix, cameraPos);
+            }
+            break;
             default: {
                 notFound.setPosition(i);
                 notFound.draw(perspectiveMatrix * viewMatrix);
@@ -374,12 +395,13 @@ int main() {
             glVertex3f(0, 0, 1);
             glEnd();
 
-            gui.draw(window, L" FPS\nX = " + std::to_wstring(cameraPos.x) +
-                     L"\nY = " + std::to_wstring(cameraPos.y) +
-                     L"\nZ = " + std::to_wstring(cameraPos.z) +
-                     L"\nθ = " + std::to_wstring(horizontalAngle * 180 / M_PI) +
-                     L"\nφ = " + std::to_wstring(vertical_angle * 180 / M_PI) +
-                     L"\nFOV = " + std::to_wstring(FOV));
+            gui.print(L"X = " + std::to_wstring(cameraPos.x) +
+                      L"\nY = " + std::to_wstring(cameraPos.y) +
+                      L"\nZ = " + std::to_wstring(cameraPos.z) +
+                      L"\nθ = " + std::to_wstring(horizontalAngle * 180 / M_PI) +
+                      L"\nφ = " + std::to_wstring(vertical_angle * 180 / M_PI) +
+                      L"\nFOV = " + std::to_wstring(FOV));
+            gui.draw(window);
         }
 
         window.display();
