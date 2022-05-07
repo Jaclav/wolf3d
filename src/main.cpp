@@ -144,26 +144,12 @@ int main() {
                 }
             }
 
-            //*mouse
+            //mouse
             if(event.type == event.MouseMoved) {
                 camera.setHorizontalAngle(camera.getHorizontalAngle() + float((int)window.getSize().x / 2 -
                                           sf::Mouse::getPosition().x) / (float)window.getSize().x);
                 camera.setVerticalAngle(camera.getVerticalAngle() + float((int)window.getSize().y / 2 -
                                         sf::Mouse::getPosition().y) / (float)window.getSize().y);
-
-                if(camera.getHorizontalAngle() > M_PI)
-                    camera.setHorizontalAngle(-M_PI + fmod(camera.getHorizontalAngle(), M_PI));
-
-                if(camera.getHorizontalAngle() < -M_PI)
-                    camera.setHorizontalAngle(M_PI + fmod(camera.getHorizontalAngle(), M_PI));
-
-                if(camera.getVerticalAngle() < -M_PI / 2)
-                    camera.setVerticalAngle(-M_PI / 2);
-
-                if(camera.getVerticalAngle() > M_PI / 2)
-                    camera.setVerticalAngle(M_PI / 2);
-
-                camera.calculateDirectionAndRight();
 
                 if(mouseClock.getElapsedTime().asMilliseconds() > 50) {
                     sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2));
@@ -171,7 +157,7 @@ int main() {
                 }
             }
             if(event.type == sf::Event::MouseWheelMoved) {
-                if(event.mouseWheel.delta > 0 )
+                if(event.mouseWheel.delta > 0)
                     camera.decFOV();
                 else if(event.mouseWheel.delta < 0)
                     camera.incFOV();
@@ -256,23 +242,9 @@ int main() {
             camera += glm::vec3(0, -0.1f, 0);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             camera.setHorizontalAngle(camera.getHorizontalAngle() - 0.06f);
-            if(camera.getHorizontalAngle() > M_PI)
-                camera.setHorizontalAngle(-M_PI + fmod(camera.getHorizontalAngle(), M_PI));
-
-            if(camera.getHorizontalAngle() < -M_PI)
-                camera.setHorizontalAngle(M_PI + fmod(camera.getHorizontalAngle(), M_PI));
-
-            camera.calculateDirectionAndRight();
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             camera.setHorizontalAngle(camera.getHorizontalAngle() + 0.06f);
-            if(camera.getHorizontalAngle() > M_PI)
-                camera.setHorizontalAngle(-M_PI + fmod(camera.getHorizontalAngle(), M_PI));
-
-            if(camera.getHorizontalAngle() < -M_PI)
-                camera.setHorizontalAngle(M_PI + fmod(camera.getHorizontalAngle(), M_PI));
-
-            camera.calculateDirectionAndRight();
         }
 
         //!noclip
@@ -343,8 +315,8 @@ int main() {
             gui.draw(window, L"X = " + std::to_wstring(camera.getPosition().x) +
                      L"\nY = " + std::to_wstring(camera.getPosition().y) +
                      L"\nZ = " + std::to_wstring(camera.getPosition().z) +
-                     L"\nθ = " + std::to_wstring(camera.getHorizontalAngle() * 180 / M_PI) +
-                     L"\nφ = " + std::to_wstring(camera.getVerticalAngle() * 180 / M_PI) +
+                     L"\nφ = " + std::to_wstring(camera.getHorizontalAngle() * 180 / M_PI) +
+                     L"\nθ = " + std::to_wstring(camera.getVerticalAngle() * 180 / M_PI) +
                      L"\nFOV = " + std::to_wstring(camera.getFOV()));
         }
 

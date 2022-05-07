@@ -13,7 +13,7 @@ public:
     Camera& operator-=(glm::vec3 position);
 
     glm::vec3 getDirection();
-	float getFOV();
+    float getFOV();
     float getHorizontalAngle();
     glm::vec3 getPosition();
     glm::vec3 getRight();
@@ -21,7 +21,7 @@ public:
     float getVerticalAngle();
 
     void setHorizontalAngle(float angle);
-	void setPosition(glm::vec3 position);
+    void setPosition(glm::vec3 position);
     void setVerticalAngle(float angle);
 
     void calculateDirectionAndRight();

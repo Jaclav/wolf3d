@@ -48,6 +48,13 @@ float Camera::getVerticalAngle() {
 
 void Camera::setHorizontalAngle(float angle) {
     horizontalAngle = angle;
+    if(horizontalAngle > M_PI)
+        horizontalAngle = -M_PI + fmod(horizontalAngle, M_PI);
+
+    if(horizontalAngle < -M_PI)
+        horizontalAngle = M_PI + fmod(horizontalAngle, M_PI);
+
+    calculateDirectionAndRight();
 }
 
 void Camera::setPosition(glm::vec3 position) {
@@ -56,6 +63,13 @@ void Camera::setPosition(glm::vec3 position) {
 
 void Camera::setVerticalAngle(float angle) {
     verticalAngle = angle;
+    if(verticalAngle < -M_PI / 2)
+        verticalAngle = -M_PI / 2;
+
+    if(verticalAngle > M_PI / 2)
+        verticalAngle = M_PI / 2;
+
+    calculateDirectionAndRight();
 }
 
 void Camera::calculateDirectionAndRight() {
