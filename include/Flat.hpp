@@ -2,19 +2,20 @@
 #define FLAT_HPP
 
 #include "Object.hpp"
+#include "Camera.hpp"
 #include <cmath>
-
-extern glm::vec3 cameraPosition;
 
 class Flat : public Object {
 public:
     Flat();
     void draw(glm::mat4 transformation);
+    void setCamera(Camera *camera);
     void setPosition(glm::vec3 position);
     void setTexture(std::string path, bool smooth = false);
 
 private:
     glm::vec3 position;
+	Camera *camera;
     sf::Texture mTexture;
     sf::Shader mShader;
 

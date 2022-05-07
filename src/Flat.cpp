@@ -25,14 +25,18 @@ Flat::Flat() {
     return;
 }
 
+void Flat::setCamera(Camera *camera) {
+    Flat::camera = camera;
+}
+
 void Flat::draw(glm::mat4 transformation) {
-    float angle = std::asin((cameraPosition.x - position.x) /
-                            std::sqrt(std::pow(position.x - cameraPosition.x, 2) +
-                                      std::pow(position.z - cameraPosition.z, 2)));
-    if(cameraPosition.z < position.z) {
-        if(cameraPosition.x < position.x)
+    float angle = std::asin((camera->getPosition().x - position.x) /
+                            std::sqrt(std::pow(position.x - camera->getPosition().x, 2) +
+                                      std::pow(position.z - camera->getPosition().z, 2)));
+    if(camera->getPosition().z < position.z) {
+        if(camera->getPosition().x < position.x)
             angle = -M_PI - angle;
-        else if(cameraPosition.x > position.x)
+        else if(camera->getPosition().x > position.x)
             angle = M_PI - angle;
     }
 
