@@ -25,7 +25,7 @@ Flat::Flat() {
     return;
 }
 
-void Flat::draw(glm::mat4 transformation, glm::vec3 cameraPosition) {
+void Flat::draw(glm::mat4 transformation) {
     float angle = std::asin((cameraPosition.x - position.x) /
                             std::sqrt(std::pow(position.x - cameraPosition.x, 2) +
                                       std::pow(position.z - cameraPosition.z, 2)));

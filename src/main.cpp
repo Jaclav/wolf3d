@@ -12,6 +12,7 @@
 #include "GUI.hpp"
 
 bool noclip = false;
+glm::vec3 cameraPosition;//TODO: make class Camera
 
 bool collision(char block) {
     if(block == ' ' || block == 'l' || noclip)
@@ -101,6 +102,10 @@ int main() {
     Flat barrel;
     barrel.setTexture("rsc/barrel.png");
 
+    std::map<char, Object*> objects{{'#', &brick},
+        {'!', &wood}, {'@', &redBrick}, {'$', &blueStone},
+        {'%', &eagle}, {'s', &stasio}, {'l', &light}, {'b', &barrel}};
+
     //floor
     Floor floor;
 
@@ -109,9 +114,9 @@ int main() {
     glm::vec3 velocity = glm::vec3(0.03); //! X is velocity for X and Z
     glm::vec3 direction(0.0, 0, 0);
     glm::vec3 right(0, 0, 0);
-    glm::vec3 cameraPos(2, 0, 3);
+    glm::vec3 cameraPosition(2, 0, 3);
 
-    glm::mat4 viewMatrix = glm::lookAt(cameraPos, cameraPos + direction, glm::cross(right, direction));
+    glm::mat4 viewMatrix = glm::lookAt(cameraPosition, cameraPosition + direction, glm::cross(right, direction));
 
     float P1 = 0.1f;
     float P2 = 100.0f;
@@ -199,71 +204,71 @@ int main() {
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             if(!noclip) {
                 /*if(horizontalAngle > 0) {
-                    if(map[(int)cameraPos.z][(int)cameraPos.x + 1] == ' ')
-                        cameraPos += glm::vec3(direction.x, 0, 0) * velocity.x;
+                    if(map[(int)cameraPosition.z][(int)cameraPosition.x + 1] == ' ')
+                        cameraPosition += glm::vec3(direction.x, 0, 0) * velocity.x;
                     else {
-                        cameraPos.x = ((int)cameraPos.x);
+                        cameraPosition.x = ((int)cameraPosition.x);
                     }
                 }
 
                 if(horizontalAngle < 0) {
-                    if(map[(int)cameraPos.z][(int)cameraPos.x - 1] == ' ')
-                        cameraPos += glm::vec3(direction.x, 0, 0) * velocity.x;
+                    if(map[(int)cameraPosition.z][(int)cameraPosition.x - 1] == ' ')
+                        cameraPosition += glm::vec3(direction.x, 0, 0) * velocity.x;
                     else {
-                        cameraPos.x = ((int)cameraPos.x);
+                        cameraPosition.x = ((int)cameraPosition.x);
                     }
                 }
 
                 if(horizontalAngle < M_PI / 2 && horizontalAngle > -M_PI / 2) {
-                    if(map[(int)cameraPos.z + 1][(int)cameraPos.x] == ' ')
-                        cameraPos += glm::vec3(0, 0, direction.z) * velocity.x;
+                    if(map[(int)cameraPosition.z + 1][(int)cameraPosition.x] == ' ')
+                        cameraPosition += glm::vec3(0, 0, direction.z) * velocity.x;
                     else {
-                        cameraPos.z = cameraPos.z;
+                        cameraPosition.z = cameraPosition.z;
                     }
                 }
 
                 if(horizontalAngle < -M_PI / 2 || horizontalAngle > M_PI / 2) {
-                    if(map[(int)cameraPos.z - 1][(int)cameraPos.x] == ' ')
-                        cameraPos += glm::vec3(0, 0, direction.z) * velocity.x;
+                    if(map[(int)cameraPosition.z - 1][(int)cameraPosition.x] == ' ')
+                        cameraPosition += glm::vec3(0, 0, direction.z) * velocity.x;
                     else {
-                        cameraPos.z = (int)cameraPos.z;
+                        cameraPosition.z = (int)cameraPosition.z;
                     }
                 }*/
 
-                cameraPos += glm::vec3(direction.x, 0, direction.z) * velocity.x * 1.6f;
-                if(collision(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)]))
-                    cameraPos -= glm::vec3(direction.x, 0, direction.z) * velocity.x * 2.0f;
+                cameraPosition += glm::vec3(direction.x, 0, direction.z) * velocity.x * 1.6f;
+                if(collision(map[(int)std::round(cameraPosition.z)][(int)std::round(cameraPosition.x)]))
+                    cameraPosition -= glm::vec3(direction.x, 0, direction.z) * velocity.x * 2.0f;
             }
             else
-                cameraPos += direction * velocity.x;
+                cameraPosition += direction * velocity.x;
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
             if(!noclip) {
-                cameraPos -= glm::vec3(direction.x, 0, direction.z) * velocity.x;
-                if(collision(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)]))
-                    cameraPos += glm::vec3(direction.x, 0, direction.z) * velocity.x * 1.6f;
+                cameraPosition -= glm::vec3(direction.x, 0, direction.z) * velocity.x;
+                if(collision(map[(int)std::round(cameraPosition.z)][(int)std::round(cameraPosition.x)]))
+                    cameraPosition += glm::vec3(direction.x, 0, direction.z) * velocity.x * 1.6f;
             }
             else
-                cameraPos -= direction * velocity.x;
+                cameraPosition -= direction * velocity.x;
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            cameraPos -= right * velocity.x;
-            if(collision(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)]))
-                cameraPos += right * velocity.x * 1.6f;
+            cameraPosition -= right * velocity.x;
+            if(collision(map[(int)std::round(cameraPosition.z)][(int)std::round(cameraPosition.x)]))
+                cameraPosition += right * velocity.x * 1.6f;
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            cameraPos += right * velocity.x;
-            if(collision(map[(int)std::round(cameraPos.z)][(int)std::round(cameraPos.x)]))
-                cameraPos -= right * velocity.x * 1.6f;
+            cameraPosition += right * velocity.x;
+            if(collision(map[(int)std::round(cameraPosition.z)][(int)std::round(cameraPosition.x)]))
+                cameraPosition -= right * velocity.x * 1.6f;
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
             if(velocity.y == 0)
                 velocity.y = 3;
             if(!!noclip)
-                cameraPos += glm::vec3(0, 0.3, 0);
+                cameraPosition += glm::vec3(0, 0.3, 0);
         }
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-            cameraPos += glm::vec3(0, -0.1, 0);
+            cameraPosition += glm::vec3(0, -0.1, 0);
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             horizontalAngle -= 0.06;
             if(horizontalAngle > M_PI)
@@ -295,20 +300,20 @@ int main() {
 
         //!noclip
         if(!noclip) {
-            if(cameraPos.y > 0.5)
+            if(cameraPosition.y > 0.5)
                 velocity.y -= gravityClock.getElapsedTime().asMilliseconds() / 1000.0f * 10;
-            cameraPos.y += velocity.y * gravityClock.getElapsedTime().asMilliseconds() / 1000.0f;
+            cameraPosition.y += velocity.y * gravityClock.getElapsedTime().asMilliseconds() / 1000.0f;
             gravityClock.restart();
         }
 
         //cannot go under ground
-        if(cameraPos.y < 0.5 && !noclip) {
-            cameraPos.y = 0.5;
+        if(cameraPosition.y < 0.5 && !noclip) {
+            cameraPosition.y = 0.5;
             velocity.y = 0;
         }
 
-        //drawing
-        viewMatrix = glm::lookAt(cameraPos, cameraPos + direction, glm::cross(right, direction));
+        //!drawing
+        viewMatrix = glm::lookAt(cameraPosition, cameraPosition + direction, glm::cross(right, direction));
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //floor
@@ -319,65 +324,25 @@ int main() {
             }
         }
 
+        //blocks
         std::sort(positions.begin(), positions.end(), [&](glm::vec3 a, glm::vec3 b) {
-            if((a.x - cameraPos.x) * (a.x - cameraPos.x) +
-                    (a.y - cameraPos.y) * (a.y - cameraPos.y) +
-                    (a.z - cameraPos.z) * (a.z - cameraPos.z) >
-                    (b.x - cameraPos.x) * (b.x - cameraPos.x) +
-                    (b.y - cameraPos.y) * (b.y - cameraPos.y) +
-                    (b.z - cameraPos.z) * (b.z - cameraPos.z))
+            if((a.x - cameraPosition.x) * (a.x - cameraPosition.x) +
+                    (a.y - cameraPosition.y) * (a.y - cameraPosition.y) +
+                    (a.z - cameraPosition.z) * (a.z - cameraPosition.z) >
+                    (b.x - cameraPosition.x) * (b.x - cameraPosition.x) +
+                    (b.y - cameraPosition.y) * (b.y - cameraPosition.y) +
+                    (b.z - cameraPosition.z) * (b.z - cameraPosition.z))
                 return true;
             return false;
         });
         for(auto i : positions) {
             //TODO: don't draw not displayed cubes
-            switch(map[(int)i.z][(int)i.x]) {
-            case '#': {
-                brick.setPosition(i);
-                brick.draw(perspectiveMatrix * viewMatrix);
-            }
-            break;
-            case '!': {
-                wood.setPosition(i);
-                wood.draw(perspectiveMatrix * viewMatrix);
-            }
-            break;
-            case '@': {
-                redBrick.setPosition(i);
-                redBrick.draw(perspectiveMatrix * viewMatrix);
-            }
-            break;
-            case '$': {
-                blueStone.setPosition(i);
-                blueStone.draw(perspectiveMatrix * viewMatrix);
-            }
-            break;
-            case '%': {
-                eagle.setPosition(i);
-                eagle.draw(perspectiveMatrix * viewMatrix);
-            }
-            break;
-            case 's': {
-                stasio.setPosition(i);
-                stasio.draw(perspectiveMatrix * viewMatrix);
-            }
-            break;
-            case 'l': {
-                light.setPosition(i);
-                light.draw(perspectiveMatrix * viewMatrix, cameraPos);
-            }
-            break;
-            case 'b': {
-                barrel.setPosition(i);
-                barrel.draw(perspectiveMatrix * viewMatrix, cameraPos);
-            }
-            break;
-            default: {
-                notFound.setPosition(i);
-                notFound.draw(perspectiveMatrix * viewMatrix);
-            }
+            if(objects.find(map[(int)i.z][(int)i.x]) != objects.end()) {
+                objects[map[(int)i.z][(int)i.x]]->setPosition(i);
+                objects[map[(int)i.z][(int)i.x]]->draw(perspectiveMatrix * viewMatrix);
             }
         }
+
         if(showGUI) {
             //dimension lines
             sf::Shader::bind(&positionShader);
@@ -399,9 +364,9 @@ int main() {
             glVertex3f(0, 0, 1);
             glEnd();
 
-            gui.draw(window, L"X = " + std::to_wstring(cameraPos.x) +
-                     L"\nY = " + std::to_wstring(cameraPos.y) +
-                     L"\nZ = " + std::to_wstring(cameraPos.z) +
+            gui.draw(window, L"X = " + std::to_wstring(cameraPosition.x) +
+                     L"\nY = " + std::to_wstring(cameraPosition.y) +
+                     L"\nZ = " + std::to_wstring(cameraPosition.z) +
                      L"\nθ = " + std::to_wstring(horizontalAngle * 180 / M_PI) +
                      L"\nφ = " + std::to_wstring(vertical_angle * 180 / M_PI) +
                      L"\nFOV = " + std::to_wstring(FOV));

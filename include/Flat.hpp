@@ -4,10 +4,12 @@
 #include "Object.hpp"
 #include <cmath>
 
-class Flat {
+extern glm::vec3 cameraPosition;
+
+class Flat : public Object {
 public:
     Flat();
-    void draw(glm::mat4 transformation, glm::vec3 cameraPosition);
+    void draw(glm::mat4 transformation);
     void setPosition(glm::vec3 position);
     void setTexture(std::string path, bool smooth = false);
 
