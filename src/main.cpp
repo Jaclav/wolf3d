@@ -1,3 +1,4 @@
+//TODO: add enemies as Flat object with two siedes.
 #include <cmath>
 #include <iostream>
 #include <vector>
