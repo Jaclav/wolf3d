@@ -57,13 +57,13 @@ int main() {
                                     "@  !!  #! !",
                                     "@      #! !",
                                     "$$ $$$$ ! !",
-                                    "$      !! !",
-                                    "$   $  % l!",
-                                    "$   $  !! !",
-                                    "$ $$$$$$! !",
-                                    "@     b$! !",
-                                    "@   l  $! !",
-                                    "@      $! !",
+                                    "$      !! !pp",
+                                    "$   $  % l   p",
+                                    "$   $  !! !p pp",
+                                    "$ $$$$$$! !p   p",
+                                    "@     b$! !p I p",
+                                    "@   l  $! !p   p",
+                                    "@      $! !pppp",
                                     "@   l  $! !",
                                     "@      $! !",
                                     "@   l     !",
@@ -101,6 +101,9 @@ int main() {
     Cube notFound;
     notFound.setTexture("rsc/notFound.png");
 
+    Cube purple;
+    purple.setTexture("rsc/purplestone.png");
+
     Cube stasio;
     stasio.setTexture("rsc/stasio.png", true);
 
@@ -112,9 +115,14 @@ int main() {
     barrel.setCamera(&camera);
     barrel.setTexture("rsc/barrel.png");
 
+    Flat pillar;
+    pillar.setCamera(&camera);
+    pillar.setTexture("rsc/pillar.png");
+
     std::map<char, Object*> objects{{'#', &brick},
         {'!', &wood}, {'@', &redBrick}, {'$', &blueStone},
-        {'%', &eagle}, {'s', &stasio}, {'l', &light}, {'b', &barrel}};
+        {'%', &eagle}, {'s', &stasio}, {'p', &purple},
+        {'l', &light}, {'b', &barrel}, {'I', &pillar}};
 
     //floor
     Floor floor;
@@ -171,6 +179,7 @@ int main() {
         //moving
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             if(!noclip) {
+                //TODO: Fix collision with objects
                 /*if(camera.getHorizontalAngle() > 0) {
                     if(map[(int)camera.getPosition().z][(int)camera.getPosition().x + 1] == ' ')
                         cameraPosition += glm::vec3(camera.getDirection().x, 0, 0) * velocity;
@@ -255,7 +264,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         //floor
-        for(int x = 0; x < 10; x++) {
+        for(int x = 0; x < 15; x++) {
             for(int z = 0; z < 30; z++) {
                 floor.setPosition(glm::vec3(x, 0, z));
                 floor.draw(camera.getTransformation());
