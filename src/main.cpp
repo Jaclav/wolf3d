@@ -42,8 +42,7 @@ int main() {
     glLineWidth(10.0);
 
     //camera
-    sf::Clock gravityClock;
-    glm::vec3 velocity = glm::vec3(0.03); //! X is velocity for X and Z
+    float velocity = 0.3f;
     Camera camera(window);
 
     sf::Mouse::setPosition(sf::Vector2i(window.getSize().x / 2, window.getSize().y / 2));
@@ -135,8 +134,8 @@ int main() {
 
             if(event.type == sf::Event::KeyPressed) {
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::G)) {
+                    camera.setPosition(glm::vec3(camera.getPosition().x, 0.5, camera.getPosition().z));
                     noclip = !noclip;
-                    gravityClock.restart();
                 }
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde)) {
                     showGUI = !showGUI;
@@ -164,19 +163,17 @@ int main() {
             }
         }//end event
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
-            velocity.x = 0.06;
-        }
-        else {
-            velocity.x = 0.03;
-        }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
+            velocity = 0.06;
+        else
+            velocity = 0.03;
 
         //moving
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
             if(!noclip) {
                 /*if(camera.getHorizontalAngle() > 0) {
                     if(map[(int)camera.getPosition().z][(int)camera.getPosition().x + 1] == ' ')
-                        cameraPosition += glm::vec3(camera.getDirection().x, 0, 0) * velocity.x;
+                        cameraPosition += glm::vec3(camera.getDirection().x, 0, 0) * velocity;
                     else {
                         camera.getPosition().x = ((int)camera.getPosition().x);
                     }
@@ -184,7 +181,7 @@ int main() {
 
                 if(camera.getHorizontalAngle() < 0) {
                     if(map[(int)camera.getPosition().z][(int)camera.getPosition().x - 1] == ' ')
-                        cameraPosition += glm::vec3(camera.getDirection().x, 0, 0) * velocity.x;
+                        cameraPosition += glm::vec3(camera.getDirection().x, 0, 0) * velocity;
                     else {
                         camera.getPosition().x = ((int)camera.getPosition().x);
                     }
@@ -192,7 +189,7 @@ int main() {
 
                 if(camera.getHorizontalAngle() < M_PI / 2 && camera.getHorizontalAngle() > -M_PI / 2) {
                     if(map[(int)camera.getPosition().z + 1][(int)camera.getPosition().x] == ' ')
-                        cameraPosition += glm::vec3(0, 0, camera.getDirection().z) * velocity.x;
+                        cameraPosition += glm::vec3(0, 0, camera.getDirection().z) * velocity;
                     else {
                         camera.getPosition().z = camera.getPosition().z;
                     }
@@ -200,65 +197,57 @@ int main() {
 
                 if(camera.getHorizontalAngle() < -M_PI / 2 || camera.getHorizontalAngle() > M_PI / 2) {
                     if(map[(int)camera.getPosition().z - 1][(int)camera.getPosition().x] == ' ')
-                        cameraPosition += glm::vec3(0, 0, camera.getDirection().z) * velocity.x;
+                        cameraPosition += glm::vec3(0, 0, camera.getDirection().z) * velocity;
                     else {
                         camera.getPosition().z = (int)camera.getPosition().z;
                     }
                 }*/
 
-                camera += glm::vec3(camera.getDirection().x, 0, camera.getDirection().z) * velocity.x * 1.6f;
+                camera += glm::vec3(camera.getDirection().x, 0, camera.getDirection().z) * velocity * 1.6f;
                 if(collision(map[(int)std::round(camera.getPosition().z)][(int)std::round(camera.getPosition().x)]))
-                    camera -= glm::vec3(camera.getDirection().x, 0, camera.getDirection().z) * velocity.x * 2.0f;
+                    camera -= glm::vec3(camera.getDirection().x, 0, camera.getDirection().z) * velocity * 2.0f;
             }
             else
-                camera += camera.getDirection() * velocity.x;
-        }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-            if(!noclip) {
-                camera -= glm::vec3(camera.getDirection().x, 0, camera.getDirection().z) * velocity.x;
-                if(collision(map[(int)std::round(camera.getPosition().z)][(int)std::round(camera.getPosition().x)]))
-                    camera += glm::vec3(camera.getDirection().x, 0, camera.getDirection().z) * velocity.x * 1.6f;
-            }
-            else
-                camera -= camera.getDirection() * velocity.x;
-        }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-            camera -= camera.getRight() * velocity.x;
-            if(collision(map[(int)std::round(camera.getPosition().z)][(int)std::round(camera.getPosition().x)]))
-                camera += camera.getRight() * velocity.x * 1.6f;
-        }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-            camera += camera.getRight() * velocity.x;
-            if(collision(map[(int)std::round(camera.getPosition().z)][(int)std::round(camera.getPosition().x)]))
-                camera -= camera.getRight() * velocity.x * 1.6f;
-        }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-            if(velocity.y == 0)
-                velocity.y = 3;
-            if(!!noclip)
-                camera += glm::vec3(0, 0.3f, 0);
-        }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-            camera += glm::vec3(0, -0.1f, 0);
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            camera.setHorizontalAngle(camera.getHorizontalAngle() - 0.06f);
-        }
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            camera.setHorizontalAngle(camera.getHorizontalAngle() + 0.06f);
+                camera += camera.getDirection() * velocity;
         }
 
-        //!noclip
-        if(!noclip) {
-            if(camera.getPosition().y > 0.5)
-                velocity.y -= gravityClock.getElapsedTime().asMilliseconds() / 1000.0f * 10;
-            camera.setPosition(glm::vec3(camera.getPosition().x, camera.getPosition().y + velocity.y * gravityClock.getElapsedTime().asMilliseconds() / 1000.0f, camera.getPosition().z));
-            gravityClock.restart();
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+            if(!noclip) {
+                camera -= glm::vec3(camera.getDirection().x, 0, camera.getDirection().z) * velocity;
+                if(collision(map[(int)std::round(camera.getPosition().z)][(int)std::round(camera.getPosition().x)]))
+                    camera += glm::vec3(camera.getDirection().x, 0, camera.getDirection().z) * velocity * 1.6f;
+            }
+            else
+                camera -= camera.getDirection() * velocity;
         }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+            camera -= camera.getRight() * velocity;
+            if(collision(map[(int)std::round(camera.getPosition().z)][(int)std::round(camera.getPosition().x)]))
+                camera += camera.getRight() * velocity * 1.6f;
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            camera += camera.getRight() * velocity;
+            if(collision(map[(int)std::round(camera.getPosition().z)][(int)std::round(camera.getPosition().x)]))
+                camera -= camera.getRight() * velocity * 1.6f;
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && noclip)
+            camera += glm::vec3(0, 0.3f, 0);
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) && noclip)
+            camera += glm::vec3(0, -0.1f, 0);
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            camera.setHorizontalAngle(camera.getHorizontalAngle() - 0.06f);
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            camera.setHorizontalAngle(camera.getHorizontalAngle() + 0.06f);
 
         //cannot go under ground
         if(camera.getPosition().y < 0.5 && !noclip) {
             camera.setPosition(glm::vec3(camera.getPosition().x, 0.5, camera.getPosition().z));
-            velocity.y = 0;
         }
 
         //!drawing
