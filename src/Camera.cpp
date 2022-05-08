@@ -30,7 +30,7 @@ float Camera:: getHorizontalAngle() {
     return horizontalAngle;
 }
 
-glm::vec3 Camera::getPosition() {
+glm::vec3 Camera::getPosition() const {
     return position;
 }
 

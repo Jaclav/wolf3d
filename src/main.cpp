@@ -147,6 +147,7 @@ int main() {
                 }
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde)) {
                     showGUI = !showGUI;
+                    window.setMouseCursorVisible(showGUI);
                     break;
                 }
             }

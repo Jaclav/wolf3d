@@ -15,7 +15,7 @@ public:
     glm::vec3 getDirection();
     float getFOV();
     float getHorizontalAngle();
-    glm::vec3 getPosition();
+    glm::vec3 getPosition() const;
     glm::vec3 getRight();
     glm::mat4 getTransformation();
     float getVerticalAngle();

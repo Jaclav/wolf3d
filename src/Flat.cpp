@@ -25,7 +25,7 @@ Flat::Flat() {
     return;
 }
 
-void Flat::setCamera(Camera *camera) {
+void Flat::setCamera(const Camera *camera) {
     Flat::camera = camera;
 }
 
