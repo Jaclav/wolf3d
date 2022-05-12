@@ -32,7 +32,7 @@ int main() {
     sf::Event event;
 
     glewInit();
-    glClearColor(0.2, 0.3, 0.3, 1);
+    glClearColor(0.15f, 0.17f, 0.17f, 1);
 
     glFrontFace(GL_CCW);
     glEnable(GL_CULL_FACE);
@@ -142,7 +142,7 @@ int main() {
 
             if(event.type == sf::Event::KeyPressed) {
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::G)) {
-                    camera.setPosition(glm::vec3(camera.getPosition().x, 0.5, camera.getPosition().z));
+                    camera.setPosition(glm::vec3(camera.getPosition().x, 0.5f, camera.getPosition().z));
                     noclip = !noclip;
                 }
                 if(sf::Keyboard::isKeyPressed(sf::Keyboard::Tilde)) {
@@ -173,9 +173,9 @@ int main() {
         }//end event
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::LControl))
-            velocity = 0.06;
+            velocity = 0.06f;
         else
-            velocity = 0.03;
+            velocity = 0.03f;
 
         //moving
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
@@ -256,8 +256,8 @@ int main() {
             camera.setHorizontalAngle(camera.getHorizontalAngle() + 0.06f);
 
         //cannot go under ground
-        if(camera.getPosition().y < 0.5 && !noclip) {
-            camera.setPosition(glm::vec3(camera.getPosition().x, 0.5, camera.getPosition().z));
+        if(camera.getPosition().y < 0.5f && !noclip) {
+            camera.setPosition(glm::vec3(camera.getPosition().x, 0.5f, camera.getPosition().z));
         }
 
         //!drawing
@@ -297,7 +297,7 @@ int main() {
             positionShader.setUniform("transformation", sf::Glsl::Mat4(glm::value_ptr(camera.getTransformation())));
 
             glBegin(GL_POINTS);
-            glVertex3f(0.0, 0, 0);
+            glVertex3f(0, 0, 0);
             glEnd();
 
             glBegin(GL_LINES);
