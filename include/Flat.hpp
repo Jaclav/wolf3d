@@ -8,14 +8,16 @@
 class Flat : public Object {
 public:
     Flat();
+    Flat& operator=(const Flat &other);
     void draw(glm::mat4 transformation);
     void setCamera(const Camera *camera);
     void setPosition(glm::vec3 position);
     void setTexture(std::string path, bool smooth = false);
+    void setTexture(const sf::Texture &texture);
 
 private:
     glm::vec3 position;
-	const Camera *camera;
+    const Camera *camera;
     sf::Texture mTexture;
     sf::Shader mShader;
 

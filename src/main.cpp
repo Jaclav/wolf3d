@@ -8,6 +8,7 @@
 #include <SFML/Graphics.hpp>
 #include "Cube.hpp"
 #include "Camera.hpp"
+#include "Enemy.hpp"
 #include "Floor.hpp"
 #include "Flat.hpp"
 #include "GUI.hpp"
@@ -32,6 +33,8 @@ int main() {
     sf::Event event;
 
     glewInit();
+
+
     glClearColor(0.15f, 0.17f, 0.17f, 1);
 
     glFrontFace(GL_CCW);
@@ -74,11 +77,11 @@ int main() {
     for(int i = 0; i < 10; i++)
         map.insert(map.end() - 3, "@      $! !");
 
-    std::vector<glm::vec3>positions;
+    std::vector<glm::vec4>positions;//! w dimensions mens block(a=0), or enemy(a>0, then (a-1) is an index to enemy)
     for(unsigned int z = 0; z < map.size(); z++) {
         for(unsigned int x = 0; x < map[z].size(); x++) {
             if(map[z][x] != ' ')
-                positions.push_back(glm::vec3(x, 0, z));
+                positions.push_back(glm::vec4(x, 0, z, 0));
         }
     }
 
@@ -135,6 +138,18 @@ int main() {
     GUI gui(window);
     bool showGUI = false;
 
+    //enemies
+    Enemy enemy;
+    enemy.setCamera(&camera);
+    enemy.setTexture("rsc/trooper.png");
+    std::vector<Enemy> enemies;
+
+    enemies.push_back(enemy);
+    positions.push_back(glm::vec4(3, 0, 3, 1));
+    enemies.push_back(enemy);
+    positions.push_back(glm::vec4(3, 0, 20, 2));
+
+
     while(window.isOpen()) {
         while(window.pollEvent(event)) {
             if(event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -178,7 +193,7 @@ int main() {
             velocity = 0.03f;
 
         //moving
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             if(!noclip) {
                 //TODO: Fix collision with objects
                 /*if(camera.getHorizontalAngle() > 0) {
@@ -221,7 +236,7 @@ int main() {
                 camera += camera.getDirection() * velocity;
         }
 
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
             if(!noclip) {
                 camera -= glm::vec3(camera.getDirection().x, 0, camera.getDirection().z) * velocity;
                 if(collision(map[(int)std::round(camera.getPosition().z)][(int)std::round(camera.getPosition().x)]))
@@ -284,12 +299,20 @@ int main() {
             return false;
         });
         for(auto i : positions) {
-            //TODO: don't draw not displayed cubes
-            if(objects.find(map[(int)i.z][(int)i.x]) != objects.end()) {
-                objects[map[(int)i.z][(int)i.x]]->setPosition(i);
-                objects[map[(int)i.z][(int)i.x]]->draw(camera.getTransformation());
+            if(i.w == 0) {
+                //TODO: don't draw not displayed cubes
+                if(objects.find(map[(int)i.z][(int)i.x]) != objects.end()) {
+                    objects[map[(int)i.z][(int)i.x]]->setPosition(i);
+                    objects[map[(int)i.z][(int)i.x]]->draw(camera.getTransformation());
+                }
+            }
+            else if(enemies.size() > 0) {
+                //draw enemies
+                enemies[i.a - 1].setPosition(i);
+                enemies[i.a - 1].draw(camera.getTransformation());
             }
         }
+
 
         if(showGUI) {
             //dimension lines

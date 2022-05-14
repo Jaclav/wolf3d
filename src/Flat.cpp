@@ -1,5 +1,4 @@
 #include "Flat.hpp"
-#include "GUI.hpp"
 
 Flat::Flat() {
     glGenBuffers(1, &mVbo);
@@ -22,7 +21,20 @@ Flat::Flat() {
     glEnableVertexAttribArray(1);
 
     assert(mShader.loadFromFile("rsc/shaders/block.vert", "rsc/shaders/block.frag"));
-    return;
+    setTexture("rsc/notFound.png");
+}
+
+Flat& Flat::operator=(const Flat &other) {
+    this->position = other.position;
+    this->camera = other.camera;
+    this->mTexture = other.mTexture;
+    assert(this->mShader.loadFromFile("rsc/shaders/block.vert", "rsc/shaders/block.frag"));
+    this->mShader.setUniform("texture", this->mTexture);
+
+    this->mVbo = other.mVbo;
+    this->mTextureVbo = other.mTextureVbo;
+    this->mVao = other.mVao;
+    return *this;
 }
 
 void Flat::setCamera(const Camera *camera) {
@@ -58,5 +70,10 @@ void Flat::setTexture(std::string path, bool smooth) {
         assert(mTexture.loadFromFile("rsc/notFound.png"));
     }
     mTexture.setSmooth(smooth);
+    mShader.setUniform("texture", mTexture);
+}
+
+void Flat::setTexture(const sf::Texture &texture) {
+    mTexture = texture;
     mShader.setUniform("texture", mTexture);
 }
