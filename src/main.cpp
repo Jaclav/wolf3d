@@ -1,4 +1,4 @@
-//TODO: add enemies as Flat object with two siedes.
+//TODO: improve enemies add World class with method collision and security
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -232,8 +232,15 @@ int main() {
                 if(collision(map[(int)std::round(camera.getPosition().z)][(int)std::round(camera.getPosition().x)]))
                     camera -= glm::vec3(camera.getDirection().x, 0, camera.getDirection().z) * velocity * 2.0f;
             }
-            else
+            else {
                 camera += camera.getDirection() * velocity;
+            }
+
+            //don't go  outside map
+            if(map[camera.getPosition().z].size() < camera.getPosition().x ||
+                    map.size() < camera.getPosition().z || camera.getPosition().x < 0 || camera.getPosition().z < 0) {
+                camera -= glm::vec3(camera.getDirection().x, 0, camera.getDirection().z) * velocity * 2.f;
+            }
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
@@ -244,18 +251,36 @@ int main() {
             }
             else
                 camera -= camera.getDirection() * velocity;
+
+            //don't go  outside map
+            if(map[camera.getPosition().z].size() < camera.getPosition().x ||
+                    map.size() < camera.getPosition().z || camera.getPosition().x < 0 || camera.getPosition().z < 0) {
+                camera += glm::vec3(camera.getDirection().x, 0, camera.getDirection().z) * velocity * 2.f;
+            }
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
             camera -= camera.getRight() * velocity;
             if(collision(map[(int)std::round(camera.getPosition().z)][(int)std::round(camera.getPosition().x)]))
                 camera += camera.getRight() * velocity * 1.6f;
+
+            //don't go  outside map
+            if(map[camera.getPosition().z].size() < camera.getPosition().x ||
+                    map.size() < camera.getPosition().z || camera.getPosition().x < 0 || camera.getPosition().z < 0) {
+                camera += camera.getRight() * velocity * 2.f;
+            }
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
             camera += camera.getRight() * velocity;
             if(collision(map[(int)std::round(camera.getPosition().z)][(int)std::round(camera.getPosition().x)]))
                 camera -= camera.getRight() * velocity * 1.6f;
+
+            //don't go  outside map
+            if(map[camera.getPosition().z].size() < camera.getPosition().x ||
+                    map.size() < camera.getPosition().z || camera.getPosition().x < 0 || camera.getPosition().z < 0) {
+                camera -= camera.getRight() * velocity * 2.f;
+            }
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && noclip)
