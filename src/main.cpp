@@ -1,4 +1,4 @@
-//TODO: improve enemies add World class with method collision and security
+//TODO: improve enemies add World class with method collision and security, add doors
 #include <cmath>
 #include <iostream>
 #include <vector>
@@ -324,7 +324,7 @@ int main() {
             return false;
         });
         for(auto i : positions) {
-            if(i.w == 0) {
+            if(i.a == 0) {
                 //TODO: don't draw not displayed cubes
                 if(objects.find(map[(int)i.z][(int)i.x]) != objects.end()) {
                     objects[map[(int)i.z][(int)i.x]]->setPosition(i);
