@@ -1,5 +1,7 @@
 # wolf3d
-It's 3D game inspired by DOS wolf3d
+It's 3D game inspired by DOS wolf3d\
+Screenshot:
+![Screenshot](screenshot.png)
 
 # Dependencies
 It requires SFML 2.5.1, openGL, GLEW, cmake and g++
